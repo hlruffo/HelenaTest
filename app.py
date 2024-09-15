@@ -2,6 +2,7 @@ import streamlit as st
 import openai
 from dotenv import load_dotenv
 import os
+import json
 
 # Carregar variáveis de ambiente do arquivo .env
 load_dotenv()
@@ -9,17 +10,16 @@ load_dotenv()
 # Obter a chave API da OpenAI do arquivo .env
 openai.api_key = os.getenv('OPENAI_API_KEY')
 
-# Carregar as instruções do assistente de um arquivo .txt
-with open('instructions.txt', 'r', encoding='utf-8') as f:
-    instructions = f.read()
-
+# Carregar as instruções do assistente de um arquivo JSON
+with open('instrucoes.json', 'r', encoding='utf-8') as f:
+    config = json.load(f)
+    instructions = config["instructions"]
 
 # Função para enviar mensagens ao assistente
 def enviar_mensagem_ao_assistente(mensagem):
     response = openai.ChatCompletion.create(
         model="gpt-4",  # Modelo correto
         messages=[
-            # Aqui estamos usando as instruções detalhadas do assistente configurado
             {"role": "system", "content": instructions},
             {"role": "user", "content": mensagem}
         ]
